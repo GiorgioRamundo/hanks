@@ -1,3 +1,5 @@
+import collections
+
 from nltk.corpus import brown
 from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
@@ -65,6 +67,13 @@ def delete_none(list):
         res.append((x, y))
     return res
 
+def convert_to_set(l):
+    s = set()
+    for p in l:
+        s.add(p)
+    return s
+
+
 
 verb = 'feel'
 n = 211
@@ -85,6 +94,7 @@ for s in sentences:
 c = 0
 pairs = []
 frequences = []
+
 for (x,y) in delete_none(fillers):
     res = ''
     res2 = ''
@@ -107,8 +117,15 @@ for (x,y) in delete_none(fillers):
     print(res)
     print(res2+'\n')
     pairs.append((semtype1,semtype2))
-    frequences[pairs[(semtype1,semtype2)]]=0
     c = c + 1
 
 print('found ' + str(c) + ' semantic types on ' + str(n) + ' sentences')
+pairs_set = convert_to_set(pairs)
+frequences = {}
+for p in pairs:
+    if p in frequences.keys():
+        frequences[p] = frequences[p] + 1
+    else:
+        frequences[p] = 1
 print(frequences)
+print(collections.OrderedDict(sorted(frequences.keys(),reverse=True)))
